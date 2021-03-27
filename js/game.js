@@ -18,7 +18,7 @@ var config = {
 
 var player;
 var crystal;
-var bombs;
+var asteroid;
 var platform;
 var cursors;
 var score = 0;
@@ -33,6 +33,7 @@ var game = new Phaser.Game(config);
         this.load.image('platL', 'assets/platL.png');
         this.load.image('platM', 'assets/platM.png');
         this.load.image('platR', 'assets/platR.png');
+        this.load.image('box', 'assets/Box.png');
         this.load.image('crystal', 'assets/crystal.png');
         this.load.image('bomb', 'assets/asteroid.png');
         this.load.image('bomb', 'assets/asteroid.png');
@@ -44,6 +45,29 @@ var game = new Phaser.Game(config);
         this.add.image(600, 450, 'space').setScale(2.5);
 
         platforms = this.physics.add.staticGroup();
+        
+        // top
+        platforms.create(64, 318, 'platR');
+        platforms.create(1216, 318, 'platL');
+
+        // row 3
+        platforms.create(192, 468, 'box');
+        platforms.create(1088, 468, 'box');
+
+        // row 2
+        platforms.create(448, 568, 'platL');
+        platforms.create(576, 568, 'platM');
+        platforms.create(704, 568, 'platM');
+        platforms.create(832, 568, 'platR');
+
+
+        // row 1
+        platforms.create(64, 718, 'platM');
+        platforms.create(192, 718, 'platR');
+        platforms.create(1088, 718, 'platL');
+        platforms.create(1216, 718, 'platM');
+        
+        //bottom
         platforms.create(64, 868, 'platL');
         platforms.create(192, 868, 'platM');
         platforms.create(320, 868, 'platM');
@@ -67,20 +91,20 @@ var game = new Phaser.Game(config);
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('dude', { frames: [0, 2, 1] }),
-            frameRate: 10,
+            frameRate: 20,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
             frames: [ { key: 'dude', frame: 3 } ],
-            frameRate: 10
+            frameRate: 20
         });
 
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('dude', {frames: [4, 6, 5]}),
-            frameRate: 10,
+            frameRate: 20,
             repeat: -1
         });
 
@@ -96,15 +120,15 @@ var game = new Phaser.Game(config);
 
         });
 
-        bombs = this.physics.add.group();
+        asteroid = this.physics.add.group();
         scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFFFFF' });
 
 
         this.physics.add.collider(player, platforms);
         this.physics.add.collider(crystal, platforms);
-        this.physics.add.collider(bombs, platforms);
+        this.physics.add.collider(asteroid, platforms);
         this.physics.add.overlap(player, crystal, collectStar, null, this);
-        this.physics.add.collider(player, bombs, hitBomb, null, this);
+        this.physics.add.collider(player, asteroid, hitBomb, null, this);
     }
 
     function update ()
@@ -116,13 +140,13 @@ var game = new Phaser.Game(config);
 
         if (cursors.left.isDown)
         {
-            player.setVelocityX(-160);
+            player.setVelocityX(-220);
 
             player.anims.play('left', true);
         }
         else if (cursors.right.isDown)
         {
-            player.setVelocityX(160);
+            player.setVelocityX(220);
 
             player.anims.play('right', true);
         }
@@ -156,7 +180,7 @@ var game = new Phaser.Game(config);
 
             var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-            var bomb = bombs.create(x, 16, 'bomb');
+            var bomb = asteroid.create(x, 16, 'bomb');
             bomb.setBounce(1);
             bomb.setCollideWorldBounds(true);
             bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
