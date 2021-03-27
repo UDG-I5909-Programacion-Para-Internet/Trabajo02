@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 1200,
+    width: 1280,
     height: 900,
     physics: {
         default: 'arcade',
@@ -17,7 +17,7 @@ var config = {
 };
 
 var player;
-var stars;
+var crystal;
 var bombs;
 var platform;
 var cursors;
@@ -30,8 +30,11 @@ var game = new Phaser.Game(config);
     function preload ()
     {
         this.load.image('space', 'assets/asteroidfield.png');
-        this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'assets/cristal.png');
+        this.load.image('platL', 'assets/platL.png');
+        this.load.image('platM', 'assets/platM.png');
+        this.load.image('platR', 'assets/platR.png');
+        this.load.image('crystal', 'assets/crystal.png');
+        this.load.image('bomb', 'assets/asteroid.png');
         this.load.image('bomb', 'assets/asteroid.png');
         this.load.spritesheet('dude', 'assets/astro.png', { frameWidth: 32, frameHeight: 62});
     }
@@ -41,11 +44,21 @@ var game = new Phaser.Game(config);
         this.add.image(600, 450, 'space').setScale(2.5);
 
         platforms = this.physics.add.staticGroup();
-        platforms.create(350, 868, 'ground').setScale(1.5).refreshBody();
-
-        platforms.create(1000, 800, 'ground');
-        platforms.create(50, 650, 'ground');
-        platforms.create(750, 620, 'ground');
+        platforms.create(64, 868, 'platL');
+        platforms.create(192, 868, 'platM');
+        platforms.create(320, 868, 'platM');
+        platforms.create(192, 868, 'platM');
+        platforms.create(448, 868, 'platM');
+        platforms.create(576, 868, 'platM');
+        platforms.create(704, 868, 'platM');
+        platforms.create(832, 868, 'platM');
+        platforms.create(960, 868, 'platM');
+        platforms.create(1088, 868, 'platM');
+        platforms.create(1216, 868, 'platR');
+        //platforms.create(350, 868, 'platform').setScale(1.5).refreshBody();
+        //platforms.create(1000, 800, 'platform');
+        //platforms.create(50, 650, 'platform');
+        //platforms.create(750, 620, 'platform');
 
         player = this.physics.add.sprite(200, 450, 'dude');
         player.setBounce(0.2);
@@ -73,13 +86,13 @@ var game = new Phaser.Game(config);
 
         cursors = this.input.keyboard.createCursorKeys();
 
-        stars = this.physics.add.group({
-            key: 'star',
-            repeat: 16,
+        crystal = this.physics.add.group({
+            key: 'crystal',
+            repeat: 18,
             setXY: { x: 12, y: 0, stepX: 70 }
         });
 
-        stars.children.iterate(function (child) {
+        crystal.children.iterate(function (child) {
 
         });
 
@@ -88,9 +101,9 @@ var game = new Phaser.Game(config);
 
 
         this.physics.add.collider(player, platforms);
-        this.physics.add.collider(stars, platforms);
+        this.physics.add.collider(crystal, platforms);
         this.physics.add.collider(bombs, platforms);
-        this.physics.add.overlap(player, stars, collectStar, null, this);
+        this.physics.add.overlap(player, crystal, collectStar, null, this);
         this.physics.add.collider(player, bombs, hitBomb, null, this);
     }
 
@@ -133,9 +146,9 @@ var game = new Phaser.Game(config);
         score += 10;
         scoreText.setText('Score: ' + score);
 
-        if (stars.countActive(true) === 0)
+        if (crystal.countActive(true) === 0)
         {
-            stars.children.iterate(function (child) {
+            crystal.children.iterate(function (child) {
 
                 child.enableBody(true, child.x, 0, true, true);
 
