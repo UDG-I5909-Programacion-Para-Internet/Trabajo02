@@ -29,11 +29,11 @@ var game = new Phaser.Game(config);
 
     function preload ()
     {
-        this.load.image('space', 'assets/1434.png');
+        this.load.image('space', 'assets/asteroidfield.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/cristal.png');
         this.load.image('bomb', 'assets/asteroid.png');
-        this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48});
+        this.load.spritesheet('dude', 'assets/astro.png', { frameWidth: 32, frameHeight: 62});
     }
 
     function create ()
@@ -41,14 +41,11 @@ var game = new Phaser.Game(config);
         this.add.image(600, 450, 'space').setScale(2.5);
 
         platforms = this.physics.add.staticGroup();
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(350, 868, 'ground').setScale(1.5).refreshBody();
+        platforms.create(350, 868, 'ground').setScale(1.5).refreshBody();
 
-    //  Now let's create some ledges
-    platforms.create(1000, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+        platforms.create(1000, 800, 'ground');
+        platforms.create(50, 650, 'ground');
+        platforms.create(750, 620, 'ground');
 
         player = this.physics.add.sprite(200, 450, 'dude');
         player.setBounce(0.2);
@@ -56,20 +53,20 @@ var game = new Phaser.Game(config);
 
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frames: this.anims.generateFrameNumbers('dude', { frames: [0, 2, 1] }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
+            frames: [ { key: 'dude', frame: 3 } ],
+            frameRate: 10
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', {start: 5, end: 8}),
+            frames: this.anims.generateFrameNumbers('dude', {frames: [4, 6, 5]}),
             frameRate: 10,
             repeat: -1
         });
@@ -138,7 +135,6 @@ var game = new Phaser.Game(config);
 
         if (stars.countActive(true) === 0)
         {
-            // A new batch of stars to collect
             stars.children.iterate(function (child) {
 
                 child.enableBody(true, child.x, 0, true, true);
